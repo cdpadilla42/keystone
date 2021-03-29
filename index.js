@@ -92,7 +92,7 @@ keystone.extendGraphQLSchema({
       type: types,
     },
   ],
-  queries,
+  queries: queries,
 });
 
 const authStrategy = keystone.createAuthStrategy({
