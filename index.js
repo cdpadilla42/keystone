@@ -1,6 +1,6 @@
 const { Keystone } = require('@keystonejs/keystone');
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
-const { Text, Checkbox, Password } = require('@keystonejs/fields');
+const { Text, Checkbox, Password, Integer } = require('@keystonejs/fields');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const initialiseData = require('./initial-data');
@@ -59,9 +59,27 @@ keystone.createList('User', {
   },
   // List-level access controls
   access: {
-    read: access.userIsAdminOrOwner,
+    read: true,
     update: access.userIsAdminOrOwner,
     create: access.userIsAdmin,
+    delete: access.userIsAdmin,
+    auth: true,
+  },
+});
+
+keystone.createList('Menuitem', {
+  fields: {
+    name: { type: Text },
+    img: { type: Text },
+    price: { type: Integer },
+    category: { type: Text },
+    description: { type: Text },
+  },
+  // List-level access controls
+  access: {
+    read: true,
+    update: access.userIsAdminOrOwner,
+    create: true,
     delete: access.userIsAdmin,
     auth: true,
   },
