@@ -7,8 +7,10 @@ const initialiseData = require('./initial-data');
 
 const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
 const PROJECT_NAME = 'apollo-next-backend';
-const adapterConfig = { mongoUri: 'mongodb://localhost/apollo-next-backend' };
+require('dotenv').config();
+console.log(process.env.TACO_DATABASE_URL);
 
+const adapterConfig = { mongoUri: process.env.TACO_DATABASE_URL };
 
 const keystone = new Keystone({
   adapter: new Adapter(adapterConfig),
@@ -16,7 +18,8 @@ const keystone = new Keystone({
 });
 
 // Access control functions
-const userIsAdmin = ({ authentication: { item: user } }) => Boolean(user && user.isAdmin);
+const userIsAdmin = ({ authentication: { item: user } }) =>
+  Boolean(user && user.isAdmin);
 const userOwnsItem = ({ authentication: { item: user } }) => {
   if (!user) {
     return false;
@@ -27,7 +30,7 @@ const userOwnsItem = ({ authentication: { item: user } }) => {
   return { id: user.id };
 };
 
-const userIsAdminOrOwner = auth => {
+const userIsAdminOrOwner = (auth) => {
   const isAdmin = access.userIsAdmin(auth);
   const isOwner = access.userOwnsItem(auth);
   return isAdmin ? isAdmin : isOwner;
