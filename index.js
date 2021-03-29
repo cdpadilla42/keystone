@@ -6,6 +6,7 @@ const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const initialiseData = require('./initial-data');
 
 const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
+const { types, queries } = require('./Schema');
 const PROJECT_NAME = 'apollo-next-backend';
 require('dotenv').config();
 console.log(process.env.TACO_DATABASE_URL);
@@ -83,6 +84,15 @@ keystone.createList('Menuitem', {
     delete: access.userIsAdmin,
     auth: true,
   },
+});
+
+keystone.extendGraphQLSchema({
+  types: [
+    {
+      type: types,
+    },
+  ],
+  queries,
 });
 
 const authStrategy = keystone.createAuthStrategy({

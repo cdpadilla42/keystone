@@ -1,7 +1,4 @@
-const { Keystone } = require('@keystonejs/keystone');
-const { Text, Checkbox, Password, Integer } = require('@keystonejs/fields');
-
-module.exports = keystone.createList('Menuitem', {
+module.export = {
   fields: {
     name: { type: Text },
     img: { type: Text },
@@ -17,4 +14,4 @@ module.exports = keystone.createList('Menuitem', {
     delete: access.userIsAdmin,
     auth: true,
   },
-});
+};
