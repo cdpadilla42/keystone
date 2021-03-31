@@ -1,28 +1,28 @@
 const graphql = String.raw;
 
 exports.types = graphql`
-  type Item {
-    img: String!
-    name: String!
-    description: String
-    category: String
-    _id: ID
-    price: Int!
-    customizations: [Customization!]
-  }
+  # type Item {
+  #   img: String!
+  #   name: String!
+  #   description: String
+  #   category: String
+  #   _id: ID
+  #   price: Int!
+  #   customizations: [Customization!]
+  # }
 
-  type Customization {
-    name: String!
-    title: String!
-    required: Boolean!
-    options: [Option!]
-    selectMultiple: Boolean
-  }
+  # type Customization {
+  #   name: String!
+  #   title: String!
+  #   required: Boolean!
+  #   options: [Option!]
+  #   selectMultiple: Boolean
+  # }
 
-  type Option {
-    name: String!
-    price: Int
-  }
+  # type Option {
+  #   name: String!
+  #   price: Int
+  # }
 
   type OrderItem {
     _id: ID!

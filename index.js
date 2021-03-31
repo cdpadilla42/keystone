@@ -1,6 +1,14 @@
 const { Keystone } = require('@keystonejs/keystone');
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
-const { Text, Checkbox, Password, Integer } = require('@keystonejs/fields');
+const {
+  Text,
+  Checkbox,
+  Password,
+  Integer,
+  Relationship,
+  Virtual,
+  Select,
+} = require('@keystonejs/fields');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const initialiseData = require('./initial-data');
@@ -68,13 +76,51 @@ keystone.createList('User', {
   },
 });
 
-keystone.createList('Menuitem', {
+keystone.createList('Item', {
   fields: {
     name: { type: Text },
     img: { type: Text },
     price: { type: Integer },
     category: { type: Text },
     description: { type: Text },
+    customizations: {
+      type: Relationship,
+      ref: 'Customization',
+      many: true,
+    },
+  },
+  // List-level access controls
+  access: {
+    read: true,
+    update: true,
+    create: true,
+    delete: access.userIsAdmin,
+    auth: true,
+  },
+});
+
+keystone.createList('Customization', {
+  fields: {
+    name: { type: Text },
+    title: { type: Text },
+    required: { type: Checkbox },
+    selectMultiple: { type: Checkbox },
+    options: { type: Relationship, ref: 'Option', many: true },
+  },
+  // List-level access controls
+  access: {
+    read: true,
+    update: true,
+    create: true,
+    delete: access.userIsAdmin,
+    auth: true,
+  },
+});
+
+keystone.createList('Option', {
+  fields: {
+    name: { type: Text, required: true },
+    price: { type: Integer },
   },
   // List-level access controls
   access: {
@@ -108,7 +154,7 @@ module.exports = {
     new AdminUIApp({
       name: PROJECT_NAME,
       enableDefaultRoute: true,
-      authStrategy,
+      // authStrategy,
     }),
   ],
 };
