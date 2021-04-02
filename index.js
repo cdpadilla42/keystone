@@ -70,7 +70,7 @@ keystone.createList('User', {
   access: {
     read: true,
     update: access.userIsAdminOrOwner,
-    create: access.userIsAdmin,
+    create: true,
     delete: access.userIsAdmin,
     auth: true,
   },
@@ -125,7 +125,7 @@ keystone.createList('Option', {
   // List-level access controls
   access: {
     read: true,
-    update: access.userIsAdminOrOwner,
+    update: true,
     create: true,
     delete: access.userIsAdmin,
     auth: true,
