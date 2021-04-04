@@ -1,4 +1,9 @@
+function calcCartTax(preTaxTotal) {
+  return 0.025 * preTaxTotal;
+}
+
 module.exports = async function checkout(_, args, context, info) {
+  const graphql = String.raw;
   try {
     console.log(args);
     // 1. Recalculate the total for the price
@@ -6,37 +11,54 @@ module.exports = async function checkout(_, args, context, info) {
     const orderIDS = order.map((item) => item.id);
     // Get items from the DB that match the orderIDS
     // const itemsFromDB = await Item.
-    const { data: itemData, errors: itemErrors } = await context.executeGraphQL(
-      {
-        context: context.sudo(),
-        query: `
-      query {
-        Item(where: {id: "5feb9ae1351036315ff45886"}) {
-          id
-          name
-          img
-          price
-          description
-        }
-      }
-      `,
-      }
+    const itemsFromDB = await Promise.all(
+      orderIDS.map(async (orderID) => {
+        console.log(orderID);
+        return await context.executeGraphQL({
+          context: context.sudo(),
+          query: graphql`
+            query GET_ITEM($id: ID!) {
+              Item(where: { id: $id }) {
+                id
+                name
+                img
+                price
+                description
+                customizations {
+                  id
+                  name
+                  title
+                  options {
+                    name
+                    price
+                  }
+                }
+              }
+            }
+          `,
+          variables: {
+            id: orderID,
+          },
+        });
+      })
     );
-    console.log(itemData, itemErrors);
-    const itemsFromDB = await context.lists.Item.find()
-      .where('id')
-      .in(orderIDS)
-      .exec();
+    // const itemsFromDB = await context.lists.Item.find()
+    //   .where('id')
+    //   .in(orderIDS)
+    //   .exec();
     let orderItems = [];
     console.log('itemsFromDB', itemsFromDB);
     console.log('order', order);
     // iterating through original order in case of duplicate items. Mongoose does not find these.
     const cartTotal = order.reduce((prev, item) => {
       // find the matching item
-      const matchedItem = itemsFromDB.find((dbItem) => dbItem._id == item.id);
+      const matchedItem = itemsFromDB.find(
+        (dbItem) => dbItem.data.Item.id == item.id
+      );
       // find the price
       console.log('matched item', matchedItem);
       // find the customization price
+      // TODO DO THE ABOVE! GOOD NEWS, You can extract this from that order simply by matching it with your item
       let addOns = 0;
       if (item.selectedOptions) {
         console.log('searching for addons');
@@ -48,7 +70,7 @@ module.exports = async function checkout(_, args, context, info) {
             return prev;
           }
           const value = item.selectedOptions[key];
-          const foundOption = matchedItem.customizations.find(
+          const foundOption = matchedItem.data.Item.customizations.find(
             (customization) => customization.name === key
           );
           console.log('foundOption', foundOption);

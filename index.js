@@ -18,7 +18,6 @@ const { types, queries } = require('./Schema');
 const mutations = require('./Resolvers/mutations');
 const PROJECT_NAME = 'apollo-next-backend';
 require('dotenv').config();
-console.log(process.env.TACO_DATABASE_URL);
 
 const adapterConfig = { mongoUri: process.env.TACO_DATABASE_URL };
 
@@ -105,8 +104,6 @@ const Item = keystone.createList('Item', {
     auth: true,
   },
 });
-
-console.log(Item);
 
 keystone.createList('Customization', {
   fields: {
