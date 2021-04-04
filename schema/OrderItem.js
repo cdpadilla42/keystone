@@ -1,4 +1,4 @@
-const { Text, Integer } = require('@keystonejs/fields');
+const { Text, Integer, Relationship } = require('@keystonejs/fields');
 
 module.exports = [
   'OrderItem',
@@ -16,7 +16,7 @@ module.exports = [
       read: true,
       update: true,
       create: true,
-      delete: access.userIsAdmin,
+      delete: true,
       auth: true,
     },
   },

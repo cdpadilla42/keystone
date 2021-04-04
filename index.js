@@ -48,6 +48,12 @@ const userIsAdminOrOwner = (auth) => {
 
 const access = { userIsAdmin, userOwnsItem, userIsAdminOrOwner };
 
+const schemas = require('./schema/index');
+
+schemas.forEach((schema) => {
+  keystone.createList(...schema);
+});
+
 keystone.createList('User', {
   fields: {
     name: { type: Text },
@@ -77,7 +83,7 @@ keystone.createList('User', {
   },
 });
 
-keystone.createList('Item', {
+const Item = keystone.createList('Item', {
   fields: {
     name: { type: Text },
     img: { type: Text },
@@ -99,6 +105,8 @@ keystone.createList('Item', {
     auth: true,
   },
 });
+
+console.log(Item);
 
 keystone.createList('Customization', {
   fields: {

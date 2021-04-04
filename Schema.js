@@ -24,21 +24,21 @@ exports.types = graphql`
   #   price: Int
   # }
 
-  type OrderItem {
-    _id: ID!
-    name: String!
-    description: String!
-    image: String!
-    price: Int!
-    quantity: Int!
-  }
+  # type OrderItem {
+  #   _id: ID!
+  #   name: String!
+  #   description: String!
+  #   image: String!
+  #   price: Int!
+  #   quantity: Int!
+  # }
 
-  type Order {
-    _id: ID!
-    items: [OrderItem!]!
-    total: Int!
-    charge: String!
-  }
+  # type Order {
+  #   _id: ID!
+  #   items: [OrderItem!]!
+  #   total: Int!
+  #   charge: String!
+  # }
 
   input CartItemInput {
     id: ID!
@@ -58,6 +58,8 @@ exports.types = graphql`
     tortilla: String
     remove: [String!]
     spice: String
+    removeWcheese: [String!]
+    removeWVeggies: [String!]
   }
 `;
 

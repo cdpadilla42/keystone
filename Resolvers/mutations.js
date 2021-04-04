@@ -1,11 +1,11 @@
-const { default: createOrder } = require('./mutations/createOrder');
+const checkout = require('./mutations/checkout');
 
 const graphql = String.raw;
 
 const mutations = [
   {
-    schema: graphql`createOrder(token: String!, cart: CartInput!): Order!`,
-    resolver: createOrder,
+    schema: graphql`checkout(token: String!, cart: CartInput!): Order!`,
+    resolver: checkout,
   },
 ];
 
