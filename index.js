@@ -15,6 +15,7 @@ const initialiseData = require('./initial-data');
 
 const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
 const { types, queries } = require('./Schema');
+const mutations = require('./Resolvers/mutations');
 const PROJECT_NAME = 'apollo-next-backend';
 require('dotenv').config();
 console.log(process.env.TACO_DATABASE_URL);
@@ -139,6 +140,7 @@ keystone.extendGraphQLSchema({
     },
   ],
   queries: queries,
+  mutations,
 });
 
 const authStrategy = keystone.createAuthStrategy({

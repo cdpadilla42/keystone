@@ -39,6 +39,26 @@ exports.types = graphql`
     total: Int!
     charge: String!
   }
+
+  input CartItemInput {
+    id: ID!
+    name: String
+    image: String
+    price: Int
+    quantity: Int!
+    selectedOptions: SelectedOptionsInput
+    cartItemId: ID!
+  }
+
+  input CartInput {
+    cart: [CartItemInput!]!
+  }
+
+  input SelectedOptionsInput {
+    tortilla: String
+    remove: [String!]
+    spice: String
+  }
 `;
 
 const schema = graphql`
