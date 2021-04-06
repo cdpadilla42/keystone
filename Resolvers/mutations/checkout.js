@@ -2,10 +2,12 @@ function calcCartTax(preTaxTotal) {
   return 0.025 * preTaxTotal;
 }
 
+const stripe = require('../../lib/stripe');
+
 module.exports = async function checkout(_, args, context, info) {
   const graphql = String.raw;
   try {
-    console.log(args);
+    console.log('args: ', args);
     // 1. Recalculate the total for the price
     const order = args.cart.cart;
     const orderIDS = order.map((item) => item.id);
@@ -88,19 +90,19 @@ module.exports = async function checkout(_, args, context, info) {
       console.log('addOns', addOns);
       // add together and multiply by quantity
       console.log({
-        price: matchedItem.price,
+        price: matchedItem.data.Item.price,
         addOns,
         quanitity: item.quantity,
       });
       const totalCostofSingleItem =
-        (matchedItem.price + addOns) * item.quantity;
+        (matchedItem.data.Item.price + addOns) * item.quantity;
 
       // save price info to orderItems
       const resultItem = {
-        id: matchedItem._id,
-        name: matchedItem.name,
-        description: matchedItem.description,
-        image: matchedItem.image,
+        id: matchedItem.data.Item.id,
+        name: matchedItem.data.Item.name,
+        description: matchedItem.data.Item.description,
+        image: matchedItem.data.Item.image,
         price: totalCostofSingleItem,
         quantity: item.quantity,
       };
@@ -127,23 +129,56 @@ module.exports = async function checkout(_, args, context, info) {
 
     // 3. Save Order to DB
     console.log('orderItems', orderItems);
-    const newOrder = await new Order({
-      items: orderItems,
-      total: amount,
-      charge: charge.id,
+
+    const renderOrderItemMutations = () => {
+      return orderItems
+        .map((orderItem) => {
+          return `
+          {
+            name: "${orderItem.name}"
+            description: "${orderItem.description}"
+            image: "${orderItem.image}"
+            price: ${orderItem.price}
+            quantity: ${orderItem.quantity}
+          }
+        `;
+        })
+        .join(', ');
+    };
+
+    console.log(renderOrderItemMutations());
+
+    const newOrder = await context.executeGraphQL({
+      context: context.sudo(),
+      query: graphql`
+        mutation CREATE_ORDER($total: Int!, $charge: String!) {
+          createOrder (data: {
+            charge: $charge,
+            total: $total
+            items: {
+              create: [
+                ${renderOrderItemMutations()}
+              ]
+            }
+          }){
+            id
+            charge
+            total
+            items {
+              id
+            }
+          }
+        }
+      `,
+      variables: {
+        total: amount,
+        charge: charge.id,
+      },
     });
 
-    const result = await newOrder.save((err, res) => {
-      if (err) {
-        console.error(err);
-      } else {
-        console.log('Order saved to DB: ', res);
-        return res;
-      }
-    });
     // 4. Return order to the client
-    console.log(newOrder);
-    return newOrder;
+    console.log('New Order: ', newOrder);
+    return newOrder.data.createOrder;
   } catch (err) {
     throw new Error(err);
   }
