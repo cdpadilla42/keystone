@@ -62,18 +62,3 @@ exports.types = graphql`
     removeWVeggies: [String!]
   }
 `;
-
-const schema = graphql`
-  testMe: String
-`;
-
-const testMe = () => {
-  return 'yay!';
-};
-
-exports.queries = [
-  {
-    schema: schema,
-    resolver: testMe,
-  },
-];

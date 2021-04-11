@@ -44,10 +44,7 @@ module.exports = async function checkout(_, args, context, info) {
         });
       })
     );
-    // const itemsFromDB = await context.lists.Item.find()
-    //   .where('id')
-    //   .in(orderIDS)
-    //   .exec();
+
     let orderItems = [];
     console.log('itemsFromDB', itemsFromDB);
     console.log('order', order);
@@ -60,7 +57,6 @@ module.exports = async function checkout(_, args, context, info) {
       // find the price
       console.log('matched item', matchedItem);
       // find the customization price
-      // TODO DO THE ABOVE! GOOD NEWS, You can extract this from that order simply by matching it with your item
       let addOns = 0;
       if (item.selectedOptions) {
         console.log('searching for addons');

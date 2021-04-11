@@ -14,7 +14,7 @@ const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const initialiseData = require('./initial-data');
 
 const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
-const { types, queries } = require('./Schema');
+const { types } = require('./schema/customTypes/Schema');
 const mutations = require('./Resolvers/mutations');
 const PROJECT_NAME = 'apollo-next-backend';
 require('dotenv').config();
@@ -26,30 +26,11 @@ const keystone = new Keystone({
   onConnect: process.env.CREATE_TABLES !== 'true' && initialiseData,
 });
 
-// Access control functions
-const userIsAdmin = ({ authentication: { item: user } }) =>
-  Boolean(user && user.isAdmin);
-const userOwnsItem = ({ authentication: { item: user } }) => {
-  if (!user) {
-    return false;
-  }
+const access = require('./access');
 
-  // Instead of a boolean, you can return a GraphQL query:
-  // https://www.keystonejs.com/api/access-control#graphqlwhere
-  return { id: user.id };
-};
+const listSchemas = require('./schema/lists/index');
 
-const userIsAdminOrOwner = (auth) => {
-  const isAdmin = access.userIsAdmin(auth);
-  const isOwner = access.userOwnsItem(auth);
-  return isAdmin ? isAdmin : isOwner;
-};
-
-const access = { userIsAdmin, userOwnsItem, userIsAdminOrOwner };
-
-const schemas = require('./schema/index');
-
-schemas.forEach((schema) => {
+listSchemas.forEach((schema) => {
   keystone.createList(...schema);
 });
 
@@ -60,8 +41,9 @@ keystone.createList('User', {
       type: Text,
       isUnique: true,
     },
-    isAdmin: {
-      type: Checkbox,
+    assignedTo: {
+      type: Relationship,
+      ref: 'Role',
       // Field-level access controls
       // Here, we set more restrictive field access so a non-admin cannot make themselves admin.
       access: {
@@ -105,24 +87,6 @@ const Item = keystone.createList('Item', {
   },
 });
 
-keystone.createList('Customization', {
-  fields: {
-    name: { type: Text },
-    title: { type: Text },
-    required: { type: Checkbox },
-    selectMultiple: { type: Checkbox },
-    options: { type: Relationship, ref: 'Option', many: true },
-  },
-  // List-level access controls
-  access: {
-    read: true,
-    update: true,
-    create: true,
-    delete: access.userIsAdmin,
-    auth: true,
-  },
-});
-
 keystone.createList('Option', {
   fields: {
     name: { type: Text, required: true },
@@ -144,7 +108,6 @@ keystone.extendGraphQLSchema({
       type: types,
     },
   ],
-  queries: queries,
   mutations,
 });
 
