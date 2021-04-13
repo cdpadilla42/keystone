@@ -35,6 +35,12 @@ exports.permissions = {
   ...generatedPermissions,
 };
 
+const canManageOrders = ({ authentication }) => {
+  if (!exports.isSignedIn({ authentication })) return false;
+  if (exports.permissions.canManageOrders({ authentication })) return true;
+  return false;
+};
+
 exports.rules = {
   canManageProducts({ authentication }) {
     if (!exports.isSignedIn({ authentication })) return false;
@@ -58,9 +64,9 @@ exports.rules = {
       return true;
     return false;
   },
-  canManageOrders({ authentication }) {
-    if (!exports.isSignedIn({ authentication })) return false;
-    if (exports.permissions.canManageOrders({ authentication })) return true;
+  canManageOrders,
+  canSeeOrder({ authentication }) {
+    if (canManageOrders({ authentication })) return true;
     return false;
   },
 };

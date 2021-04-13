@@ -1,4 +1,5 @@
 const { Text, Checkbox, Relationship } = require('@keystonejs/fields');
+const { rules } = require('../../access');
 
 module.exports = [
   'Customization',
@@ -13,10 +14,9 @@ module.exports = [
     // List-level access controls
     access: {
       read: true,
-      update: true,
-      create: true,
-      delete: true,
-      auth: true,
+      update: rules.canManageProducts,
+      create: rules.canManageProducts,
+      delete: rules.canManageProducts,
     },
   },
 ];

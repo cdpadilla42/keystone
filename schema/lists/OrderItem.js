@@ -1,4 +1,5 @@
 const { Text, Integer, Relationship } = require('@keystonejs/fields');
+const { rules } = require('../../access');
 
 module.exports = [
   'OrderItem',
@@ -14,10 +15,9 @@ module.exports = [
     // List-level access controls
     access: {
       read: true,
-      update: true,
-      create: true,
-      delete: true,
-      auth: true,
+      update: rules.canManageOrders,
+      create: rules.canManageOrders,
+      delete: rules.canManageOrders,
     },
   },
 ];
