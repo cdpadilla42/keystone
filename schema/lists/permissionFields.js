@@ -1,7 +1,7 @@
-import { Checkbox } from '@keystonejs/fields';
-import access from '../../access';
+const { Checkbox } = require('@keystonejs/fields');
+const access = require('../../access');
 
-export const permissionFields = {
+exports.permissionFields = {
   isAdmin: { type: Checkbox },
   canManageProducts: { type: Checkbox },
   canSeeOtherUsers: { type: Checkbox },

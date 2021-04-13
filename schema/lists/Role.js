@@ -1,8 +1,8 @@
-const { Text, Integer, Relationship } = require('@keystonejs/fields');
+const { Text, Relationship } = require('@keystonejs/fields');
 const { permissionFields } = require('./permissionFields');
 
 module.exports = [
-  'OrderItem',
+  'Role',
   {
     fields: {
       name: { type: Text, required: true },

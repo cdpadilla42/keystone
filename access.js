@@ -1,9 +1,9 @@
-import permissionFields from './schema/lists/permissionFields';
+const permissionFields = require('./schema/lists/permissionFields');
 
 // Access control functions
-export const userIsAdmin = ({ authentication: { item: user } }) =>
+exports.userIsAdmin = ({ authentication: { item: user } }) =>
   Boolean(user && user.isAdmin);
-export const userOwnsItem = ({ authentication: { item: user } }) => {
+exports.userOwnsItem = ({ authentication: { item: user } }) => {
   if (!user) {
     return false;
   }
@@ -13,15 +13,15 @@ export const userOwnsItem = ({ authentication: { item: user } }) => {
   return { id: user.id };
 };
 
-export const userIsAdminOrOwner = (auth) => {
+exports.userIsAdminOrOwner = (auth) => {
   const isAdmin = access.userIsAdmin(auth);
   const isOwner = access.userOwnsItem(auth);
   return isAdmin ? isAdmin : isOwner;
 };
 
-export const isSignedIn = (auth) => !!auth;
+exports.isSignedIn = (auth) => !!auth;
 
-export const generatedPermissions = Object.fromEntries(
+exports.generatedPermissions = Object.fromEntries(
   Object.keys(permissionFields).map((permission) => [
     permission,
     // TODO Write function that uses session info to answer these questions....
