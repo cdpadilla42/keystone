@@ -1,5 +1,4 @@
 const { Text, Relationship } = require('@keystonejs/fields');
-const { permissionFields } = require('./permissionFields');
 
 module.exports = [
   'Role',
@@ -7,7 +6,6 @@ module.exports = [
     fields: {
       name: { type: Text, required: true },
       description: { type: Text, required: true },
-      ...permissionFields,
       assignedTo: { type: Relationship, ref: 'User' },
     },
     // List-level access controls

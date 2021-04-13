@@ -1,14 +1,5 @@
 const { Keystone } = require('@keystonejs/keystone');
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
-const {
-  Text,
-  Checkbox,
-  Password,
-  Integer,
-  Relationship,
-  Virtual,
-  Select,
-} = require('@keystonejs/fields');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const initialiseData = require('./initial-data');
@@ -21,9 +12,15 @@ require('dotenv').config();
 
 const adapterConfig = { mongoUri: process.env.TACO_DATABASE_URL };
 
+const sessionConfig = {
+  maxAge: 60 * 60 * 24 * 360,
+};
+
 const keystone = new Keystone({
   adapter: new Adapter(adapterConfig),
   onConnect: process.env.CREATE_TABLES !== 'true' && initialiseData,
+  cookie: sessionConfig,
+  cookieSecret: process.env.COOKIE_SECRET,
 });
 
 const access = require('./access');
@@ -56,7 +53,7 @@ module.exports = {
     new AdminUIApp({
       name: PROJECT_NAME,
       enableDefaultRoute: true,
-      // authStrategy,
+      authStrategy,
     }),
   ],
 };
