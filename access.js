@@ -42,4 +42,25 @@ exports.rules = {
     if (exports.permissions.canManageProducts({ authentication })) return true;
     return false;
   },
+  canSeeOtherUsers({ authentication }) {
+    if (!exports.isSignedIn({ authentication })) return false;
+    if (exports.permissions.canSeeOtherUsers({ authentication })) return true;
+    return false;
+  },
+  canManageUsers({ authentication }) {
+    if (!exports.isSignedIn({ authentication })) return false;
+    if (exports.permissions.canManageUsers({ authentication })) return true;
+    return false;
+  },
+  canManagePermissions({ authentication }) {
+    if (!exports.isSignedIn({ authentication })) return false;
+    if (exports.permissions.canManagePermissions({ authentication }))
+      return true;
+    return false;
+  },
+  canManageOrders({ authentication }) {
+    if (!exports.isSignedIn({ authentication })) return false;
+    if (exports.permissions.canManageOrders({ authentication })) return true;
+    return false;
+  },
 };
