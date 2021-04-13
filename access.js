@@ -19,17 +19,13 @@ exports.userIsAdminOrOwner = (auth) => {
   return isAdmin ? isAdmin : isOwner;
 };
 
-exports.isSignedIn = (auth) => !!auth;
+exports.isSignedIn = ({ authentication }) => !!authentication.item.id;
 
 // Generated from the permissions fields and based on user's role
 const generatedPermissions = Object.fromEntries(
   Object.keys(permissionFields).map((permission) => [
     permission,
     function ({ authentication }) {
-      console.log(authentication);
-      console.log(authentication?.item);
-      console.log(authentication?.item);
-      // TODO Convert me to graphql like the above since assignedTo is a ref
       return authentication?.item[permission] || false;
     },
   ])
@@ -37,4 +33,13 @@ const generatedPermissions = Object.fromEntries(
 
 exports.permissions = {
   ...generatedPermissions,
+};
+
+exports.rules = {
+  canManageProducts({ authentication }) {
+    if (!exports.isSignedIn({ authentication })) return false;
+    // 1. Do they have the permission of canManageProduct
+    if (exports.permissions.canManageProducts({ authentication })) return true;
+    return false;
+  },
 };
