@@ -2,6 +2,7 @@ const permissionFields = require('./schema/lists/permissionFields');
 const graphql = String.raw;
 // Access control functions
 exports.userOwnsItem = ({ authentication: { item: user } }) => {
+  // Only works with Users Items
   if (!user) {
     return false;
   }
@@ -42,7 +43,7 @@ exports.rules = {
   canSeeOtherUsers({ authentication }) {
     if (!exports.isSignedIn({ authentication })) return false;
     if (exports.permissions.canSeeOtherUsers({ authentication })) return true;
-    return false;
+    return exports.userOwnsItem({ authentication });
   },
   canManageUsers({ authentication }) {
     if (!exports.isSignedIn({ authentication })) return false;
@@ -51,8 +52,7 @@ exports.rules = {
   },
   canManagePermissions({ authentication }) {
     if (!exports.isSignedIn({ authentication })) return false;
-    if (exports.permissions.canManagePermissions({ authentication }))
-      return true;
+    if (exports.permissions.canManagePermissions({ authentication })) return true;
     return false;
   },
   canManageOrders,

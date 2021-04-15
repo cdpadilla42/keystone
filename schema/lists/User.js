@@ -1,5 +1,5 @@
 const { Text, Relationship, Password } = require('@keystonejs/fields');
-const access = require('../../access');
+const {rules} = require('../../access');
 const permissionFields = require('./permissionFields');
 
 module.exports = [
@@ -32,10 +32,10 @@ module.exports = [
     },
     // List-level access controls
     access: {
-      read: true,
-      update: true,
-      create: true,
-      delete: true,
+      read: rules.canSeeOtherUsers,
+      update: rules.canManageUsers,
+      create: rules.canManageUsers,
+      delete: rules.canManageUsers,
       auth: true,
     },
   },
