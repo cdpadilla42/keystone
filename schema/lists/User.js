@@ -28,9 +28,9 @@ module.exports = [
     // List-level access controls
     access: {
       read: true,
-      update: access.userIsAdminOrOwner,
+      update: true,
       create: true,
-      delete: access.userIsAdmin,
+      delete: true,
       auth: true,
     },
   },

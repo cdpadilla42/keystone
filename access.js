@@ -1,22 +1,13 @@
 const permissionFields = require('./schema/lists/permissionFields');
 const graphql = String.raw;
 // Access control functions
-exports.userIsAdmin = ({ authentication: { item: user } }) =>
-  Boolean(user && user.isAdmin);
 exports.userOwnsItem = ({ authentication: { item: user } }) => {
   if (!user) {
     return false;
   }
-
   // Instead of a boolean, you can return a GraphQL query:
   // https://www.keystonejs.com/api/access-control#graphqlwhere
   return { id: user.id };
-};
-
-exports.userIsAdminOrOwner = (auth) => {
-  const isAdmin = exports.userIsAdmin(auth);
-  const isOwner = exports.userOwnsItem(auth);
-  return isAdmin ? isAdmin : isOwner;
 };
 
 exports.isSignedIn = ({ authentication }) => !!authentication.item.id;
@@ -56,7 +47,7 @@ exports.rules = {
   canManageUsers({ authentication }) {
     if (!exports.isSignedIn({ authentication })) return false;
     if (exports.permissions.canManageUsers({ authentication })) return true;
-    return false;
+    return exports.userOwnsItem({ authentication });
   },
   canManagePermissions({ authentication }) {
     if (!exports.isSignedIn({ authentication })) return false;
@@ -65,8 +56,9 @@ exports.rules = {
     return false;
   },
   canManageOrders,
-  canSeeOrder({ authentication }) {
-    if (canManageOrders({ authentication })) return true;
-    return false;
+  canSeeOrder({ authentication: {item} }) {
+    if (canManageOrders({ authentication: {item} })) return true;
+    console.log(item)
+    return { user: { id: item.id } };
   },
 };
