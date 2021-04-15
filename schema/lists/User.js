@@ -23,6 +23,11 @@ module.exports = [
       password: {
         type: Password,
       },
+      orders: {
+        type: Relationship,
+        ref: 'Order.user',
+        many: true,
+      },
       ...permissionFields,
     },
     // List-level access controls

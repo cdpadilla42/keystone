@@ -10,7 +10,7 @@ module.exports = [
       image: { type: Text, required: false },
       price: { type: Integer, required: true },
       quantity: { type: Integer, required: true },
-      order: { type: Relationship, ref: 'Order' },
+      order: { type: Relationship, ref: 'Order.items' },
     },
     // List-level access controls
     access: {

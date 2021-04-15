@@ -5,10 +5,10 @@ module.exports = [
   'Order',
   {
     fields: {
-      items: { type: Relationship, ref: 'OrderItem', many: true },
+      items: { type: Relationship, ref: 'OrderItem.order', many: true },
       charge: { type: Text, required: true },
       total: { type: Integer, required: true },
-      user: { type: Relationship, ref: 'User', many: false },
+      user: { type: Relationship, ref: 'User.orders', many: false },
     },
     // List-level access controls
     access: {
