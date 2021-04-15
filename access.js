@@ -58,7 +58,6 @@ exports.rules = {
   canManageOrders,
   canSeeOrder({ authentication: {item} }) {
     if (canManageOrders({ authentication: {item} })) return true;
-    console.log(item)
     return { user: { id: item.id } };
   },
 };

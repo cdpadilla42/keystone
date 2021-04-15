@@ -13,9 +13,9 @@ module.exports = [
     // List-level access controls
     access: {
       read: rules.canSeeOrder,
-      update: rules.canSeeOrder,
-      create: rules.canSeeOrder,
-      delete: rules.canSeeOrder,
+      update: rules.canManageOrders,
+      create: rules.canManageOrders,
+      delete: rules.canManageOrders,
     },
   },
 ];
