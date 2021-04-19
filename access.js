@@ -1,5 +1,4 @@
 const permissionFields = require('./schema/lists/permissionFields');
-const graphql = String.raw;
 // Access control functions
 exports.userOwnsItem = ({ authentication: { item: user } }) => {
   // Only works with Users Items
