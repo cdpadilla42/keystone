@@ -2,10 +2,30 @@ function calcCartTax(preTaxTotal) {
   return 0.025 * preTaxTotal;
 }
 
+const { sendAnEmail } = require('../../lib/mail');
 const stripe = require('../../lib/stripe');
+const { priceToString } = require('../../lib/utility');
 
 module.exports = async function checkout(_, args, context, info) {
   const graphql = String.raw;
+  const renderOrderItems = (order) => {
+    if (!order) return;
+    return order.items.map((item) => {
+      return (
+        <div
+          style="
+          display: flex;
+          justify-content: space-between;
+          margin: 1rem;"
+        >
+          <span>
+            {item.quantity} {item.name}
+          </span>
+          <span>{priceToString(item.price)}</span>
+        </div>
+      );
+    });
+  };
   try {
     console.log('args: ', args);
     // 1. Recalculate the total for the price
@@ -171,6 +191,45 @@ module.exports = async function checkout(_, args, context, info) {
         charge: charge.id,
       },
     });
+
+    // 3.5. Send order confirmation email
+    // TODO
+    const emailRes = await sendAnEmail(
+      'test@test.com',
+      `
+      <h3>
+        Thank you for your order! <i>🌮</i>
+      </h3>
+      ${renderOrderItems(newOrder.data.createOrder)}
+      <div style="
+        font-weight: 700;
+        display: flex;
+        justify-content: space-between;
+        margin: 1rem;
+      ">
+        <span>Total:</span>
+        <span> ${priceToString(newOrder.data.createOrder?.total)}</span>
+      </div>
+      <div style="
+        color: rgb(160, 160, 160);
+        font-size: 0.9rem;
+        display: flex;
+        justify-content: space-between;
+        margin: 1rem;
+      ">
+        <span>Order ID: ${newOrder.data.createOrder.id}</span>
+      </div>
+      <div style="
+        color: rgb(160, 160, 160);
+        font-size: 0.9rem;
+        display: flex;
+        justify-content: space-between;
+        margin: 1rem;
+      ">
+        <span>Charge ID: ${newOrder.data.createOrder.charge}</span>
+      </div>
+      `
+    );
 
     // 4. Return order to the client
     console.log('New Order: ', newOrder);
