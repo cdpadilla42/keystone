@@ -42,7 +42,7 @@ module.exports = [
     // List-level access controls
     access: {
       read: rules.canSeeOtherUsers,
-      update: true,
+      update: rules.canManageUsers,
       create: rules.canManageUsers,
       delete: rules.canManageUsers,
       auth: true,

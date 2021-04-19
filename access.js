@@ -48,7 +48,6 @@ exports.rules = {
   canManageUsers({ authentication }) {
     if (!exports.isSignedIn({ authentication })) return false;
     if (exports.permissions.canManageUsers({ authentication })) return true;
-    // TODO Change so user can manage self minus permissions
     return { id: authentication.item.id };
   },
   canManagePermissions({ authentication }) {
