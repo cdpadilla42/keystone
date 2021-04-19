@@ -1,6 +1,15 @@
 const { Text, Relationship, Password } = require('@keystonejs/fields');
-const {rules} = require('../../access');
+const { rules } = require('../../access');
 const permissionFields = require('./permissionFields');
+
+const generatedPermissionsFields = {};
+
+Object.keys(permissionFields).forEach((key) => {
+  generatedPermissionsFields[key] = {
+    ...permissionFields[key],
+    access: rules.canManagePermissions,
+  };
+});
 
 module.exports = [
   'User',
@@ -28,12 +37,12 @@ module.exports = [
         ref: 'Order.user',
         many: true,
       },
-      ...permissionFields,
+      ...generatedPermissionsFields,
     },
     // List-level access controls
     access: {
       read: rules.canSeeOtherUsers,
-      update: rules.canManageUsers,
+      update: true,
       create: rules.canManageUsers,
       delete: rules.canManageUsers,
       auth: true,

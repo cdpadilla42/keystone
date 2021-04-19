@@ -48,16 +48,22 @@ exports.rules = {
   canManageUsers({ authentication }) {
     if (!exports.isSignedIn({ authentication })) return false;
     if (exports.permissions.canManageUsers({ authentication })) return true;
-    return exports.userOwnsItem({ authentication });
+    // TODO Change so user can manage self minus permissions
+    return { id: authentication.item.id };
   },
   canManagePermissions({ authentication }) {
     if (!exports.isSignedIn({ authentication })) return false;
-    if (exports.permissions.canManagePermissions({ authentication })) return true;
+    if (exports.permissions.canManagePermissions({ authentication }))
+      return true;
     return false;
   },
   canManageOrders,
-  canSeeOrder({ authentication: {item} }) {
-    if (canManageOrders({ authentication: {item} })) return true;
+  canSeeOrder({ authentication: { item } }) {
+    if (canManageOrders({ authentication: { item } })) return true;
     return { user: { id: item.id } };
+  },
+  canSeeOrderItem({ authentication: { item } }) {
+    if (canManageOrders({ authentication: { item } })) return true;
+    return { order: { user: { id: item.id } } };
   },
 };
