@@ -11,19 +11,19 @@ module.exports = async function checkout(_, args, context, info) {
   const renderOrderItems = (order) => {
     if (!order) return;
     return order.items.map((item) => {
-      return (
-        <div
+      return `
+        <p
           style="
           display: flex;
           justify-content: space-between;
           margin: 1rem;"
         >
           <span>
-            {item.quantity} {item.name}
+            ${item.quantity} ${item.name}
           </span>
-          <span>{priceToString(item.price)}</span>
-        </div>
-      );
+          <span>${priceToString(item.price)}</span>
+        </p>
+      `;
     });
   };
   try {
@@ -182,6 +182,9 @@ module.exports = async function checkout(_, args, context, info) {
             total
             items {
               id
+              quantity
+              name
+              price
             }
           }
         }
@@ -201,7 +204,7 @@ module.exports = async function checkout(_, args, context, info) {
         Thank you for your order! <i>🌮</i>
       </h3>
       ${renderOrderItems(newOrder.data.createOrder)}
-      <div style="
+      <p style="
         font-weight: 700;
         display: flex;
         justify-content: space-between;
@@ -209,17 +212,17 @@ module.exports = async function checkout(_, args, context, info) {
       ">
         <span>Total:</span>
         <span> ${priceToString(newOrder.data.createOrder?.total)}</span>
-      </div>
-      <div style="
+      </p>
+      <p style="
         color: rgb(160, 160, 160);
         font-size: 0.9rem;
         display: flex;
         justify-content: space-between;
         margin: 1rem;
       ">
-        <span>Order ID: ${newOrder.data.createOrder.id}</span>
-      </div>
-      <div style="
+        <span>Order ID: ${newOrder.data.createOrder?.id}</span>
+      </p>
+      <p style="
         color: rgb(160, 160, 160);
         font-size: 0.9rem;
         display: flex;
@@ -227,12 +230,12 @@ module.exports = async function checkout(_, args, context, info) {
         margin: 1rem;
       ">
         <span>Charge ID: ${newOrder.data.createOrder.charge}</span>
-      </div>
+      </p>
       `
     );
 
     // 4. Return order to the client
-    console.log('New Order: ', newOrder);
+    console.log('New Order: ', JSON.stringify(newOrder, null, 2));
     return newOrder.data.createOrder;
   } catch (err) {
     throw new Error(err);

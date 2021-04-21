@@ -16,7 +16,7 @@ module.exports = [
     access: {
       read: rules.canSeeOrderItem,
       update: rules.canManageOrders,
-      create: rules.canManageOrders,
+      create: true,
       delete: rules.canManageOrders,
     },
   },

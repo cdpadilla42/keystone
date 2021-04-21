@@ -10,7 +10,7 @@ exports.userOwnsItem = ({ authentication: { item: user } }) => {
   return { id: user.id };
 };
 
-exports.isSignedIn = ({ authentication }) => !!authentication.item.id;
+exports.isSignedIn = ({ authentication }) => !!authentication?.item?.id;
 
 // Generated from the permissions fields and based on user's role
 const generatedPermissions = Object.fromEntries(
@@ -57,11 +57,17 @@ exports.rules = {
   },
   canManageOrders,
   canSeeOrder({ authentication: { item } }) {
-    if (canManageOrders({ authentication: { item } })) return true;
-    return { user: { id: item.id } };
+    // TODO EVERYONE CAN SEE ORDERS UNTIL I LOG IN ON FRONT END
+    return true;
+    // TODO REMOVE THIS!!!!
+    // if (canManageOrders({ authentication: { item } })) return true;
+    // return { user: { id: item.id } };
   },
   canSeeOrderItem({ authentication: { item } }) {
-    if (canManageOrders({ authentication: { item } })) return true;
-    return { order: { user: { id: item.id } } };
+    // TODO EVERYONE CAN SEE ORDERS UNTIL I LOG IN ON FRONT END
+    return true;
+    // TODO REMOVE THIS!!!!
+    // if (canManageOrders({ authentication: { item } })) return true;
+    // return { order: { user: { id: item.id } } };
   },
 };
